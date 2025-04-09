@@ -47,7 +47,7 @@ def get_client():
 def get_options(prompt) -> OptionsResponse:
     client = get_client()
     response = client.beta.chat.completions.parse(
-        model="gpt-4o-mini",
+        model=os.getenv("OPENAI_MODEL", default="gpt-4o-mini"),
         messages=[{"role": "user", "content": PROMPT.format(prompt=prompt)}],
         response_format=OptionsResponse,
     )
