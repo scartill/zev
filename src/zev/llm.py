@@ -41,7 +41,7 @@ Here is the users prompt:
 
 
 def get_client():
-    return openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    return openai.OpenAI(base_url=os.getenv("OPENAI_BASE_URL", default=None), api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def get_options(prompt) -> OptionsResponse:
