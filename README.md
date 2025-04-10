@@ -56,6 +56,8 @@ You can update your OpenAI API key or other settings by running:
 zev --setup
 ```
 
+To use the OpenAI key, you must have an OpenAI account and a subscription. You can create an API key on [this page](https://platform.openai.com/settings/organization/api-keys).
+
 ## 🤝 Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests.
