@@ -2,7 +2,7 @@ import openai
 import os
 from pydantic import BaseModel
 from typing import Optional
-
+from zev.constants import DEFAULT_MODEL
 
 class Command(BaseModel):
     command: str
@@ -41,14 +41,21 @@ Here is the users prompt:
 
 
 def get_client():
-    return openai.OpenAI(base_url=os.getenv("OPENAI_BASE_URL", default=None), api_key=os.getenv("OPENAI_API_KEY"))
+    base_url = os.getenv("OPENAI_BASE_URL", default="").strip()
+    api_key = os.getenv("OPENAI_API_KEY", default="").strip()
+    if not base_url or not api_key:
+        raise ValueError("OPENAI_BASE_URL and OPENAI_API_KEY must be set. Try running `zev --setup`.")
+    return openai.OpenAI(base_url=base_url, api_key=api_key)
 
 
 def get_options(prompt) -> OptionsResponse | None:
     client = get_client()
+    model = os.getenv("OPENAI_MODEL", default=DEFAULT_MODEL)
+    if not model:
+        raise ValueError("OPENAI_MODEL must be set. Try running `zev --setup`.")
     try:
         response = client.beta.chat.completions.parse(
-            model="gpt-4o-mini",
+            model=model,
             messages=[{"role": "user", "content": PROMPT.format(prompt=prompt)}],
             response_format=OptionsResponse,
         )

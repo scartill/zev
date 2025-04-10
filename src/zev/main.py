@@ -7,6 +7,7 @@ import platformdirs
 from rich import print as rprint
 import sys
 
+from zev.constants import DEFAULT_BASE_URL, DEFAULT_MODEL
 from zev.llm import get_options
 from zev.utils import get_input_string
 
@@ -24,7 +25,19 @@ DOT_ENV_FIELDS = [
         name="OPENAI_API_KEY",
         prompt="Enter your OpenAI API key",
         required=False,
-        default="",
+        default=os.getenv("OPENAI_API_KEY", ""),
+    ),
+    DotEnvField(
+        name="OPENAI_BASE_URL",
+        prompt="Enter your OpenAI base URL (for example, to use Ollama, enter http://localhost:11434/v1. If you don't know what this is, just press enter)",
+        required=True,
+        default=DEFAULT_BASE_URL,
+    ),
+    DotEnvField(
+        name="OPENAI_MODEL",
+        prompt="Enter your OpenAI model",
+        required=True,
+        default=DEFAULT_MODEL,
     ),
 ]
 
@@ -32,8 +45,7 @@ DOT_ENV_FIELDS = [
 def setup():
     new_file = ""
     for field in DOT_ENV_FIELDS:
-        current_value = os.environ.get(field.name, "")
-        new_value = get_input_string(field.name, field.prompt, current_value, field.default, field.required)
+        new_value = get_input_string(field.name, field.prompt, field.default, field.required)
         new_file += f"{field.name}={new_value}\n"
 
     app_data_dir = platformdirs.user_data_dir("zev")
@@ -89,16 +101,16 @@ def app():
     
     if not os.path.exists(os.path.join(app_data_dir, ".env")):
         setup()
-        print("Setup complete... querying now...\n")
+        print("Setup complete...\n")
         if len(args) == 1 and args[0] == "--setup":
             return
     elif len(args) == 1 and args[0] == "--setup":
         dotenv.load_dotenv(os.path.join(app_data_dir, ".env"), override=True)
         setup()
-        print("Setup complete... querying now...\n")
+        print("Setup complete...\n")
         return
     elif len(args) == 1 and args[0] == "--version":
-        print(f"zev version: 0.1.9")
+        print(f"zev version: 0.2.0")
         return
 
     # important: make sure this is loaded before actually running the app (in regular or interactive mode)
