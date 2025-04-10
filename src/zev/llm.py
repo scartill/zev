@@ -2,7 +2,8 @@ import openai
 import os
 from pydantic import BaseModel
 from typing import Optional
-from zev.constants import DEFAULT_MODEL
+
+from constants import DEFAULT_MODEL
 
 class Command(BaseModel):
     command: str
