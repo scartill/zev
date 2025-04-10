@@ -7,9 +7,9 @@ import platformdirs
 from rich import print as rprint
 import sys
 
-from .constants import DEFAULT_BASE_URL, DEFAULT_MODEL
-from .llm import get_options
-from .utils import get_input_string
+from zev.constants import DEFAULT_BASE_URL, DEFAULT_MODEL
+from zev.llm import get_options
+from zev.utils import get_input_string
 
 
 @dataclass
@@ -110,7 +110,7 @@ def app():
         print("Setup complete...\n")
         return
     elif len(args) == 1 and args[0] == "--version":
-        print(f"zev version: 0.2.2")
+        print(f"zev version: 0.2.3")
         return
 
     # important: make sure this is loaded before actually running the app (in regular or interactive mode)
