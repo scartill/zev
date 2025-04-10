@@ -3,7 +3,7 @@ import os
 from pydantic import BaseModel
 from typing import Optional
 
-from constants import DEFAULT_MODEL
+from .constants import DEFAULT_MODEL
 
 class Command(BaseModel):
     command: str

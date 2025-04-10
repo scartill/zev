@@ -7,9 +7,9 @@ import platformdirs
 from rich import print as rprint
 import sys
 
-from constants import DEFAULT_BASE_URL, DEFAULT_MODEL
-from llm import get_options
-from utils import get_input_string
+from .constants import DEFAULT_BASE_URL, DEFAULT_MODEL
+from .llm import get_options
+from .utils import get_input_string
 
 
 @dataclass
@@ -90,7 +90,7 @@ def show_options(words: str):
 
 
 def run_no_prompt():
-    input = get_input_string("input", "Describe what you want to do", "", "", False)
+    input = get_input_string("input", "Describe what you want to do", "", False)
     show_options(input)
 
 
@@ -110,7 +110,7 @@ def app():
         print("Setup complete...\n")
         return
     elif len(args) == 1 and args[0] == "--version":
-        print(f"zev version: 0.2.1")
+        print(f"zev version: 0.2.2")
         return
 
     # important: make sure this is loaded before actually running the app (in regular or interactive mode)
