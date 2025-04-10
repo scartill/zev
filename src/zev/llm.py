@@ -44,11 +44,15 @@ def get_client():
     return openai.OpenAI(base_url=os.getenv("OPENAI_BASE_URL", default=None), api_key=os.getenv("OPENAI_API_KEY"))
 
 
-def get_options(prompt) -> OptionsResponse:
+def get_options(prompt) -> OptionsResponse | None:
     client = get_client()
-    response = client.beta.chat.completions.parse(
-        model=os.getenv("OPENAI_MODEL", default="gpt-4o-mini"),
-        messages=[{"role": "user", "content": PROMPT.format(prompt=prompt)}],
-        response_format=OptionsResponse,
-    )
-    return response.choices[0].message.parsed
+    try:
+        response = client.beta.chat.completions.parse(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": PROMPT.format(prompt=prompt)}],
+            response_format=OptionsResponse,
+        )
+        return response.choices[0].message.parsed
+    except openai.AuthenticationError as e:
+        print("Error: There was an error with your OpenAI API key. You can change it by running `zev --setup`.")
+        return
