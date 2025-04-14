@@ -17,7 +17,7 @@ class OptionsResponse(BaseModel):
 
 
 PROMPT = """
-You are a helpful assistent that helps users remember commands for the terminal. You 
+You are a helpful assistant that helps users remember commands for the terminal. You 
 will return a JSON object with a list of at most three options.
 
 The options should be related to the prompt that the user provides (the prompt might
