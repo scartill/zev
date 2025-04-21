@@ -63,9 +63,10 @@ def get_options(prompt: str, context: str) -> OptionsResponse | None:
     if not model:
         raise ValueError("OPENAI_MODEL must be set. Try running `zev --setup`.")
     try:
+        assembled_prompt = PROMPT.format(prompt=prompt, context=context)
         response = client.beta.chat.completions.parse(
             model=model,
-            messages=[{"role": "user", "content": PROMPT.format(prompt=prompt, context=context)}],
+            messages=[{"role": "user", "content": assembled_prompt}],
             response_format=OptionsResponse,
         )
         return response.choices[0].message.parsed

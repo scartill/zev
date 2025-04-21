@@ -23,6 +23,6 @@ def get_input_string(
 
 def get_env_context() -> str:
     os_name = platform.platform(aliased=True)
-    shell = os.environ.get("SHELL")
+    shell = os.environ.get("SHELL") or os.environ.get("COMSPEC")
     return f"OS: {os_name}\nSHELL: {shell}" if shell else f"OS: {os_name}"
 
