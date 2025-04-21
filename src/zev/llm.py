@@ -1,9 +1,9 @@
+import openai
 import os
+from pydantic import BaseModel
 from typing import Optional
 
-import openai
-from pydantic import BaseModel
-
+from zev.constants import DEFAULT_MODEL
 
 class Command(BaseModel):
     command: str
@@ -17,7 +17,7 @@ class OptionsResponse(BaseModel):
 
 
 PROMPT = """
-You are a helpful assistent that helps users remember commands for the terminal. You 
+You are a helpful assistant that helps users remember commands for the terminal. You 
 will return a JSON object with a list of at most three options.
 
 The options should be related to the prompt that the user provides (the prompt might
@@ -50,14 +50,25 @@ Here is the users prompt:
 
 
 def get_client():
-    return openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    base_url = os.getenv("OPENAI_BASE_URL", default="").strip()
+    api_key = os.getenv("OPENAI_API_KEY", default="").strip()
+    if not base_url or not api_key:
+        raise ValueError("OPENAI_BASE_URL and OPENAI_API_KEY must be set. Try running `zev --setup`.")
+    return openai.OpenAI(base_url=base_url, api_key=api_key)
 
 
-def get_options(prompt: str, context: str) -> OptionsResponse:
+def get_options(prompt: str, context: str) -> OptionsResponse | None:
     client = get_client()
-    response = client.beta.chat.completions.parse(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": PROMPT.format(prompt=prompt, context=context)}],
-        response_format=OptionsResponse,
-    )
-    return response.choices[0].message.parsed
+    model = os.getenv("OPENAI_MODEL", default=DEFAULT_MODEL)
+    if not model:
+        raise ValueError("OPENAI_MODEL must be set. Try running `zev --setup`.")
+    try:
+        response = client.beta.chat.completions.parse(
+            model=model,
+            messages=[{"role": "user", "content": PROMPT.format(prompt=prompt, context=context)}],
+            response_format=OptionsResponse,
+        )
+        return response.choices[0].message.parsed
+    except openai.AuthenticationError as e:
+        print("Error: There was an error with your OpenAI API key. You can change it by running `zev --setup`.")
+        return

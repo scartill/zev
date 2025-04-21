@@ -8,6 +8,7 @@ import pyperclip
 import questionary
 from rich import print as rprint
 
+from zev.constants import DEFAULT_BASE_URL, DEFAULT_MODEL
 from zev.llm import get_options
 from zev.utils import get_env_context, get_input_string
 
@@ -25,7 +26,19 @@ DOT_ENV_FIELDS = [
         name="OPENAI_API_KEY",
         prompt="Enter your OpenAI API key",
         required=False,
-        default="",
+        default=os.getenv("OPENAI_API_KEY", ""),
+    ),
+    DotEnvField(
+        name="OPENAI_BASE_URL",
+        prompt="Enter your OpenAI base URL (for example, to use Ollama, enter http://localhost:11434/v1. If you don't know what this is, just press enter)",
+        required=True,
+        default=DEFAULT_BASE_URL,
+    ),
+    DotEnvField(
+        name="OPENAI_MODEL",
+        prompt="Enter your OpenAI model",
+        required=True,
+        default=DEFAULT_MODEL,
     ),
 ]
 
@@ -33,8 +46,7 @@ DOT_ENV_FIELDS = [
 def setup():
     new_file = ""
     for field in DOT_ENV_FIELDS:
-        current_value = os.environ[field.name]
-        new_value = get_input_string(field.name, field.prompt, current_value, field.default, field.required)
+        new_value = get_input_string(field.name, field.prompt, field.default, field.required)
         new_file += f"{field.name}={new_value}\n"
 
     app_data_dir = platformdirs.user_data_dir("zev")
@@ -46,6 +58,9 @@ def setup():
 def show_options(words: str):
     context = get_env_context()
     response = get_options(prompt=words, context=context)
+    if response is None:
+        return
+
     if not response.is_valid:
         print(response.explanation_if_not_valid)
         return
@@ -77,24 +92,35 @@ def show_options(words: str):
 
 
 def run_no_prompt():
-    input = get_input_string("input", "Describe what you want to do", "", "", False)
+    input = get_input_string("input", "Describe what you want to do", "", False)
     show_options(input)
 
 
 def app():
-    # check if .env exists
+    # check if .env exists or if setting up again
     app_data_dir = platformdirs.user_data_dir("zev")
+    args = [arg.strip() for arg in sys.argv[1:]]
+    
     if not os.path.exists(os.path.join(app_data_dir, ".env")):
         setup()
-        print("Setup complete... querying now...\n")
+        print("Setup complete...\n")
+        if len(args) == 1 and args[0] == "--setup":
+            return
+    elif len(args) == 1 and args[0] == "--setup":
+        dotenv.load_dotenv(os.path.join(app_data_dir, ".env"), override=True)
+        setup()
+        print("Setup complete...\n")
+        return
+    elif len(args) == 1 and args[0] == "--version":
+        print(f"zev version: 0.2.3")
+        return
 
-    args = sys.argv[1:]
+    # important: make sure this is loaded before actually running the app (in regular or interactive mode)
+    dotenv.load_dotenv(os.path.join(app_data_dir, ".env"), override=True)
 
     if not args:
         run_no_prompt()
         return
-
-    dotenv.load_dotenv(os.path.join(app_data_dir, ".env"))
 
     # Strip any trailing question marks from the input
     query = " ".join(args).rstrip("?")

@@ -48,6 +48,30 @@ zev 'check if google.com is reachable'
 zev 'show uncommitted changes in git'
 ```
 
+## ⚙️ Settings
+
+You can update your OpenAI API key or other settings by running:
+
+```bash
+zev --setup
+```
+
+To use the OpenAI key, you must have an OpenAI account and a subscription. You can create an API key on [this page](https://platform.openai.com/settings/organization/api-keys).
+
+## 🐪 Using with Ollama
+
+You can use Zev with [Ollama](https://ollama.ai/) as an alternative to OpenAI, which lets you run all commands locally. To set this up:
+
+1. Install and start [Ollama](https://ollama.com/) with a model of your choice
+
+2. Run `zev --setup` and put in the proper settings. For example:
+
+```
+Enter your OpenAI API key:
+Enter your OpenAI base URL: http://localhost:11434/v1
+Enter your OpenAI model: llama3.2
+```
+
 ## 🤝 Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests.
