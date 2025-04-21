@@ -1,12 +1,11 @@
-import os
-import sys
 from dataclasses import dataclass
-
 import dotenv
+import os
 import platformdirs
 import pyperclip
 import questionary
 from rich import print as rprint
+import sys
 
 from zev.constants import DEFAULT_BASE_URL, DEFAULT_MODEL
 from zev.llm import get_options
