@@ -1,15 +1,16 @@
-from dataclasses import dataclass
-import dotenv
 import os
-import questionary
-import pyperclip
-import platformdirs
-from rich import print as rprint
 import sys
+from dataclasses import dataclass
+
+import dotenv
+import platformdirs
+import pyperclip
+import questionary
+from rich import print as rprint
 
 from zev.constants import DEFAULT_BASE_URL, DEFAULT_MODEL
 from zev.llm import get_options
-from zev.utils import get_input_string
+from zev.utils import get_env_context, get_input_string
 
 
 @dataclass
@@ -55,7 +56,8 @@ def setup():
 
 
 def show_options(words: str):
-    response = get_options(words)
+    context = get_env_context()
+    response = get_options(prompt=words, context=context)
     if response is None:
         return
 
@@ -110,7 +112,7 @@ def app():
         print("Setup complete...\n")
         return
     elif len(args) == 1 and args[0] == "--version":
-        print(f"zev version: 0.2.3")
+        print(f"zev version: 0.3.0")
         return
 
     # important: make sure this is loaded before actually running the app (in regular or interactive mode)

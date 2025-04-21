@@ -33,6 +33,14 @@ commands in the commands field (remember, up to 3 options, and they all must be 
 that can be run in a bash terminal without changing anything). Each command should have
 a short explanation of what it does.
 
+Here is some context about the user's environment:
+
+============== 
+
+{context}
+
+============== 
+
 Here is the users prompt:
 
 ============== 
@@ -49,15 +57,16 @@ def get_client():
     return openai.OpenAI(base_url=base_url, api_key=api_key)
 
 
-def get_options(prompt) -> OptionsResponse | None:
+def get_options(prompt: str, context: str) -> OptionsResponse | None:
     client = get_client()
     model = os.getenv("OPENAI_MODEL", default=DEFAULT_MODEL)
     if not model:
         raise ValueError("OPENAI_MODEL must be set. Try running `zev --setup`.")
     try:
+        assembled_prompt = PROMPT.format(prompt=prompt, context=context)
         response = client.beta.chat.completions.parse(
             model=model,
-            messages=[{"role": "user", "content": PROMPT.format(prompt=prompt)}],
+            messages=[{"role": "user", "content": assembled_prompt}],
             response_format=OptionsResponse,
         )
         return response.choices[0].message.parsed
