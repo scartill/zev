@@ -5,6 +5,7 @@ import platformdirs
 import pyperclip
 import questionary
 from rich import print as rprint
+from rich.console import Console
 import sys
 
 from zev.constants import DEFAULT_BASE_URL, DEFAULT_MODEL
@@ -56,7 +57,9 @@ def setup():
 
 def show_options(words: str):
     context = get_env_context()
-    response = get_options(prompt=words, context=context)
+    console = Console()
+    with console.status("[bold blue]Thinking...", spinner="dots"):
+        response = get_options(prompt=words, context=context)
     if response is None:
         return
 
@@ -111,7 +114,7 @@ def app():
         print("Setup complete...\n")
         return
     elif len(args) == 1 and args[0] == "--version":
-        print(f"zev version: 0.3.0")
+        print(f"zev version: 0.3.1")
         return
 
     # important: make sure this is loaded before actually running the app (in regular or interactive mode)
