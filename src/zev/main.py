@@ -102,7 +102,7 @@ def app():
     # check if .env exists or if setting up again
     app_data_dir = platformdirs.user_data_dir("zev")
     args = [arg.strip() for arg in sys.argv[1:]]
-    
+
     if not os.path.exists(os.path.join(app_data_dir, ".env")):
         setup()
         print("Setup complete...\n")
