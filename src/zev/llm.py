@@ -3,7 +3,7 @@ import os
 from pydantic import BaseModel
 from typing import Optional
 
-from zev.constants import DEFAULT_MODEL
+from zev.constants import DEFAULT_MODEL, OPENAI_BASE_URL
 
 class Command(BaseModel):
     command: str
@@ -52,7 +52,9 @@ Here is the users prompt:
 def get_client():
     base_url = os.getenv("OPENAI_BASE_URL", default="").strip()
     api_key = os.getenv("OPENAI_API_KEY", default="").strip()
-    if not base_url or not api_key:
+    if (not base_url or 
+        (not api_key and OPENAI_BASE_URL == base_url)  # only care about api key if using openai (not ollama)
+    ): 
         raise ValueError("OPENAI_BASE_URL and OPENAI_API_KEY must be set. Try running `zev --setup`.")
     return openai.OpenAI(base_url=base_url, api_key=api_key)
 

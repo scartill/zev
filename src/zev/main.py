@@ -8,7 +8,7 @@ from rich import print as rprint
 from rich.console import Console
 import sys
 
-from zev.constants import DEFAULT_BASE_URL, DEFAULT_MODEL
+from zev.constants import OPENAI_BASE_URL, DEFAULT_MODEL
 from zev.llm import get_options
 from zev.utils import get_env_context, get_input_string
 
@@ -32,7 +32,7 @@ DOT_ENV_FIELDS = [
         name="OPENAI_BASE_URL",
         prompt="Enter your OpenAI base URL (for example, to use Ollama, enter http://localhost:11434/v1. If you don't know what this is, just press enter)",
         required=True,
-        default=DEFAULT_BASE_URL,
+        default=OPENAI_BASE_URL,
     ),
     DotEnvField(
         name="OPENAI_MODEL",
@@ -114,7 +114,7 @@ def app():
         print("Setup complete...\n")
         return
     elif len(args) == 1 and args[0] == "--version":
-        print(f"zev version: 0.3.1")
+        print(f"zev version: 0.3.2")
         return
 
     # important: make sure this is loaded before actually running the app (in regular or interactive mode)
