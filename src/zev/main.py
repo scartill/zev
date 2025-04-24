@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 import dotenv
 import os
-import platformdirs
 import pyperclip
 import questionary
 from rich import print as rprint
 from rich.console import Console
 import sys
+from pathlib import Path
 
 from zev.constants import OPENAI_BASE_URL, DEFAULT_MODEL
 from zev.llm import get_options
@@ -49,9 +49,8 @@ def setup():
         new_value = get_input_string(field.name, field.prompt, field.default, field.required)
         new_file += f"{field.name}={new_value}\n"
 
-    app_data_dir = platformdirs.user_data_dir("zev")
-    os.makedirs(app_data_dir, exist_ok=True)
-    with open(os.path.join(app_data_dir, ".env"), "w") as f:
+    config_path = Path.home() / ".zevrc"
+    with open(config_path, "w") as f:
         f.write(new_file)
 
 
@@ -99,17 +98,17 @@ def run_no_prompt():
 
 
 def app():
-    # check if .env exists or if setting up again
-    app_data_dir = platformdirs.user_data_dir("zev")
+    # check if .zevrc exists or if setting up again
+    config_path = Path.home() / ".zevrc"
     args = [arg.strip() for arg in sys.argv[1:]]
 
-    if not os.path.exists(os.path.join(app_data_dir, ".env")):
+    if not config_path.exists():
         setup()
         print("Setup complete...\n")
         if len(args) == 1 and args[0] == "--setup":
             return
     elif len(args) == 1 and args[0] == "--setup":
-        dotenv.load_dotenv(os.path.join(app_data_dir, ".env"), override=True)
+        dotenv.load_dotenv(config_path, override=True)
         setup()
         print("Setup complete...\n")
         return
@@ -118,7 +117,7 @@ def app():
         return
 
     # important: make sure this is loaded before actually running the app (in regular or interactive mode)
-    dotenv.load_dotenv(os.path.join(app_data_dir, ".env"), override=True)
+    dotenv.load_dotenv(config_path, override=True)
 
     if not args:
         run_no_prompt()
