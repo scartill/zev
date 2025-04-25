@@ -65,7 +65,7 @@ def show_options(words: str):
         print("No commands available")
         return
 
-    options = [questionary.Choice(cmd.command, description=cmd.short_explanation) for cmd in response.commands]
+    options = [questionary.Choice(cmd.command, description=cmd.short_explanation, value=cmd) for cmd in response.commands]
     options.append(questionary.Choice("Cancel"))
     options.append(questionary.Separator())
 
@@ -83,8 +83,11 @@ def show_options(words: str):
     ).ask()
 
     if selected != "Cancel":
-        pyperclip.copy(selected)
-        rprint("\n[green]✓[/green] Copied to clipboard")
+        pyperclip.copy(selected.command)
+        print("")
+        if selected.dangerous_explanation:
+            rprint(f"[red]⚠️ Warning: {selected.dangerous_explanation}[/red]\n")
+        rprint("[green]✓[/green] Copied to clipboard")
 
 
 def run_no_prompt():
@@ -108,7 +111,7 @@ def app():
         print("Setup complete...\n")
         return
     elif len(args) == 1 and args[0] == "--version":
-        print(f"zev version: 0.4.0")
+        print(f"zev version: 0.5.0")
         return
 
     # important: make sure this is loaded before actually running the app (in regular or interactive mode)
