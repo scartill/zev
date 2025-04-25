@@ -1,6 +1,7 @@
 from dotenv import dotenv_values
 from pathlib import Path
 import questionary
+from typing import Dict
 
 from zev.config.types import (
     SetupQuestion,
@@ -32,21 +33,29 @@ setup_questions = [
 ]
 
 
-def prompt_question(question: SetupQuestion):
-    answers = {}
+def prompt_question(question: SetupQuestion, answers: Dict[str, str]) -> Dict[str, str]:
+    existing_answer = answers.get(question.name)
     if type(question) == SetupQuestionSelect:
+        # Find the matching option for the default value
+        default_option = None
+        if existing_answer:
+            default_option = next((opt for opt in question.options if opt.value == existing_answer), None)
+
         answer: SetupQuestionSelect = questionary.select(
             question.prompt,
             choices=[
                 questionary.Choice(option.label, description=option.description, value=option)
                 for option in question.options
             ],
+            default=default_option,
         ).ask()
         answers[question.name] = answer.value
         for q in answer.follow_up_questions:
-            answers.update(prompt_question(q))
+            answers.update(prompt_question(q, answers=answers))
     elif type(question) == SetupQuestionText:
-        answer = questionary.text(question.prompt, default=question.default, validate=question.validator).ask()
+        answer = questionary.text(
+            question.prompt, default=existing_answer or question.default, validate=question.validator
+        ).ask()
         answers[question.name] = answer
     else:
         raise Exception("Invalid question type")
@@ -55,12 +64,12 @@ def prompt_question(question: SetupQuestion):
 
 def run_setup():
     config_path = Path.home() / ".zevrc"
-    answers = dotenv_values(config_path) # load in current values and then override as necessary
+    answers = dotenv_values(config_path)  # load in current values and then override as necessary
     for question in setup_questions:
-        answers.update(prompt_question(question))
-    
+        answers.update(prompt_question(question, answers))
+
     new_file = ""
-    for env_var_name, value  in answers.items():
+    for env_var_name, value in answers.items():
         new_file += f"{env_var_name}={value}\n"
 
     with open(config_path, "w") as f:

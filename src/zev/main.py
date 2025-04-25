@@ -9,8 +9,8 @@ from rich.console import Console
 import sys
 
 from zev.config.setup import run_setup
-from zev.constants import OPENAI_BASE_URL, DEFAULT_MODEL, CONFIG_FILE_NAME
-from zev.llm import get_options
+from zev.constants import OPENAI_BASE_URL, OPENAI_DEFAULT_MODEL, CONFIG_FILE_NAME
+from zev.llms.llm import get_inference_provider
 from zev.utils import get_env_context, get_input_string
 
 
@@ -39,7 +39,7 @@ DOT_ENV_FIELDS = [
         name="OPENAI_MODEL",
         prompt="Enter your OpenAI model",
         required=True,
-        default=DEFAULT_MODEL,
+        default=OPENAI_DEFAULT_MODEL,
     ),
 ]
 
@@ -52,7 +52,8 @@ def show_options(words: str):
     context = get_env_context()
     console = Console()
     with console.status("[bold blue]Thinking...", spinner="dots"):
-        response = get_options(prompt=words, context=context)
+        inference_provider = get_inference_provider()
+        response = inference_provider.get_options(prompt=words, context=context)
     if response is None:
         return
 
