@@ -1,14 +1,15 @@
 from dataclasses import dataclass
 import dotenv
 import os
+from pathlib import Path
 import pyperclip
 import questionary
 from rich import print as rprint
 from rich.console import Console
 import sys
-from pathlib import Path
 
-from zev.constants import OPENAI_BASE_URL, DEFAULT_MODEL
+from zev.config.setup import run_setup
+from zev.constants import OPENAI_BASE_URL, DEFAULT_MODEL, CONFIG_FILE_NAME
 from zev.llm import get_options
 from zev.utils import get_env_context, get_input_string
 
@@ -44,14 +45,7 @@ DOT_ENV_FIELDS = [
 
 
 def setup():
-    new_file = ""
-    for field in DOT_ENV_FIELDS:
-        new_value = get_input_string(field.name, field.prompt, field.default, field.required)
-        new_file += f"{field.name}={new_value}\n"
-
-    config_path = Path.home() / ".zevrc"
-    with open(config_path, "w") as f:
-        f.write(new_file)
+    run_setup()
 
 
 def show_options(words: str):
@@ -99,17 +93,17 @@ def run_no_prompt():
 
 def app():
     # check if .zevrc exists or if setting up again
-    config_path = Path.home() / ".zevrc"
+    config_path = Path.home() / CONFIG_FILE_NAME
     args = [arg.strip() for arg in sys.argv[1:]]
 
     if not config_path.exists():
-        setup()
+        run_setup()
         print("Setup complete...\n")
         if len(args) == 1 and args[0] == "--setup":
             return
     elif len(args) == 1 and args[0] == "--setup":
         dotenv.load_dotenv(config_path, override=True)
-        setup()
+        run_setup()
         print("Setup complete...\n")
         return
     elif len(args) == 1 and args[0] == "--version":
