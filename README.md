@@ -67,10 +67,12 @@ You can use Zev with [Ollama](https://ollama.ai/) as an alternative to OpenAI, w
 2. Run `zev --setup` and put in the proper settings. For example:
 
 ```
-Enter your OpenAI API key:
-Enter your OpenAI base URL: http://localhost:11434/v1
-Enter your OpenAI model: llama3.2
+? Pick your LLM provider: Ollama
+? Enter the Ollama URL: http://localhost:11434/v1
+? Enter the model to use (e.g. llama3.2): llama3.2
 ```
+
+Note that to switch backends, you can re-run `zev --setup` again at any time.
 
 ## 🤝 Contributing
 
