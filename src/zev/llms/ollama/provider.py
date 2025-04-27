@@ -15,5 +15,5 @@ class OllamaProvider(OpenAIProvider):
             raise ValueError("OLLAMA_BASE_URL must be set. Try running `zev --setup`.")
         if not config.ollama_model:
             raise ValueError("OLLAMA_MODEL must be set. Try running `zev --setup`.")
-        self.client = OpenAI(base_url=config.ollama_base_url)
+        self.client = OpenAI(base_url=config.ollama_base_url, api_key="ollama")
         self.model = config.ollama_model
