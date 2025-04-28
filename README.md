@@ -13,7 +13,7 @@ Zev helps you remember (or discover) terminal commands using natural language.
 pip install zev
 ```
 
-This project runs on top of the OpenAI API. After your first time running it, you will be prompted to enter an OpenAI key.
+- **Note:** This project runs on top of LLM APIs like OpenAI, Google's Gemini, or [Ollama](https://ollama.com/).
 
 ## 🎮 Usage
 
@@ -56,13 +56,24 @@ zev 'show uncommitted changes in git'
 
 ## ⚙️ Settings
 
-You can update your OpenAI API key or other settings by running:
+### **Supported LLM Providers:**
+  - OpenAI
+  - Google Gemini
+  - Ollama
+
+You can update your API keys and provider settings by running:
 
 ```bash
 zev --setup
 ```
 
-To use the OpenAI key, you must have an OpenAI account and a subscription. You can create an API key on [this page](https://platform.openai.com/settings/organization/api-keys).
+### OpenAI
+
+To use OpenAI, you need an OpenAI account and a subscription. You can create an API key on [this page](https://platform.openai.com/settings/organization/api-keys).
+
+### Google Gemini (Free)
+
+To use Google's Gemini models, you need a Google AI Studio account. You can create a Gemini API key at [Google AI Studio](https://aistudio.google.com/).
 
 ## 🐪 Using with Ollama
 
