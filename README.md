@@ -15,6 +15,14 @@ pip install zev
 
 - **Note:** This project runs on top of LLM APIs like OpenAI, Google's Gemini, or [Ollama](https://ollama.com/).
 
+## 📦 Dependencies
+
+For clipboard functionality (copying and pasting) to work properly, you may need to install:
+
+- On Linux: `xclip` or `xsel` (for X11) or `wl-clipboard` (for Wayland)
+- On macOS: No additional dependencies needed
+- On Windows: No additional dependencies needed
+
 ## 🎮 Usage
 
 #### Option 1: Interactive Mode

@@ -53,11 +53,16 @@ def show_options(words: str):
     ).ask()
 
     if selected != "Cancel":
-        pyperclip.copy(selected.command)
         print("")
         if selected.dangerous_explanation:
             rprint(f"[red]⚠️ Warning: {selected.dangerous_explanation}[/red]\n")
-        rprint("[green]✓[/green] Copied to clipboard")
+        try:
+            pyperclip.copy(selected.command)
+            rprint("[green]✓[/green] Copied to clipboard")
+        except pyperclip.PyperclipException as e:
+            rprint(f"[red]Could not copy to clipboard: {e}. This may happen if you're running over SSH or missing a clipboard utility (e.g., xclip/xsel on Linux).[/red]")
+            rprint("[cyan]Here is your command:[/cyan]")
+            print(selected.command)
 
 
 def run_no_prompt():
@@ -81,7 +86,7 @@ def app():
         print("Setup complete...\n")
         return
     elif len(args) == 1 and args[0] == "--version":
-        print(f"zev version: 0.6.0")
+        print(f"zev version: 0.6.1")
         return
 
     # important: make sure this is loaded before actually running the app (in regular or interactive mode)
