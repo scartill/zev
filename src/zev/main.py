@@ -60,7 +60,7 @@ def show_options(words: str):
             pyperclip.copy(selected.command)
             rprint("[green]✓[/green] Copied to clipboard")
         except pyperclip.PyperclipException as e:
-            rprint(f"[red]Could not copy to clipboard: {e}. This may happen if you're running over SSH or missing a clipboard utility (e.g., xclip/xsel on Linux).[/red]")
+            rprint(f"[red]Could not copy to clipboard: {e} (the clipboard may not work at all if you are running over SSH)[/red]")
             rprint("[cyan]Here is your command:[/cyan]")
             print(selected.command)
 
@@ -86,7 +86,7 @@ def app():
         print("Setup complete...\n")
         return
     elif len(args) == 1 and args[0] == "--version":
-        print(f"zev version: 0.6.1")
+        print(f"zev version: 0.6.2")
         return
 
     # important: make sure this is loaded before actually running the app (in regular or interactive mode)
