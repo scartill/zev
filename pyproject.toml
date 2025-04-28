@@ -1,6 +1,6 @@
 [project]
 name = "zev"
-version = "0.5.3"
+version = "0.6.0"
 description = "Lookup CLI commands easily"
 readme = "README.md"
 dependencies = [

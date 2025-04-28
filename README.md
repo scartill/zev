@@ -57,9 +57,10 @@ zev 'show uncommitted changes in git'
 ## ⚙️ Settings
 
 ### **Supported LLM Providers:**
-  - OpenAI
-  - Google Gemini
-  - Ollama
+
+- OpenAI
+- Google Gemini
+- Ollama
 
 You can update your API keys and provider settings by running:
 
@@ -73,11 +74,11 @@ To use OpenAI, you need an OpenAI account and a subscription. You can create an 
 
 ### Google Gemini (Free)
 
-To use Google's Gemini models, you need a Google AI Studio account. You can create a Gemini API key at [Google AI Studio](https://aistudio.google.com/).
+To use Google's Gemini models, you need a Google AI Studio account. You can create a Gemini API key in [Google AI Studio](https://aistudio.google.com/).
 
 ## 🐪 Using with Ollama
 
-You can use Zev with [Ollama](https://ollama.ai/) as an alternative to OpenAI, which lets you run all commands locally. To set this up:
+You can use Zev with [Ollama](https://ollama.ai/) as an alternative to hosted providers, which lets you run all commands locally. To set this up:
 
 1. Install and start [Ollama](https://ollama.com/) with a model of your choice
 

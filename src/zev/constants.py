@@ -3,6 +3,7 @@ class LLMProviders:
     OLLAMA = "ollama"
     GEMINI = "gemini"
 
+
 DEFAULT_PROVIDER = LLMProviders.OPENAI
 
 # Default model names for each provider

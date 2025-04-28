@@ -5,6 +5,7 @@ from zev.llms.ollama.provider import OllamaProvider
 from zev.llms.gemini.provider import GeminiProvider
 from zev.llms.inference_provider_base import InferenceProvider
 
+
 def get_inference_provider() -> InferenceProvider:
     if config.llm_provider == LLMProviders.OPENAI:
         return OpenAIProvider()
