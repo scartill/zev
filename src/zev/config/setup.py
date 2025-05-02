@@ -49,18 +49,12 @@ setup_questions = [
 def prompt_question(question: SetupQuestion, answers: Dict[str, str]) -> Dict[str, str]:
     existing_answer = answers.get(question.name)
     if isinstance(question, SetupQuestionSelect):
-        # Find the matching option for the default value
-        default_option = None
-        if existing_answer:
-            default_option = next((opt for opt in question.options if opt.value == existing_answer), None)
-
         selected_option: SetupQuestionSelectOption = questionary.select(
             question.prompt,
             choices=[
                 questionary.Choice(option.label, description=option.description, value=option)
                 for option in question.options
             ],
-            default=default_option.value if default_option else None,
         ).ask()
 
         answers[question.name] = selected_option.value
