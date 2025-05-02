@@ -89,7 +89,7 @@ def app():
         print("Setup complete...\n")
         return
     elif len(args) == 1 and args[0] == "--version":
-        print("zev version: 0.6.2")
+        print("zev version: 0.7.0")
         return
 
     # important: make sure this is loaded before actually running the app (in regular or interactive mode)

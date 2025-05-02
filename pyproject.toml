@@ -1,6 +1,6 @@
 [project]
 name = "zev"
-version = "0.6.3"
+version = "0.7.0"
 description = "Lookup CLI commands easily"
 readme = "README.md"
 dependencies = [
@@ -37,6 +37,8 @@ include = ["zev*"]
 
 [tool.ruff]
 line-length = 120
+# this ensures imports are properly sorted
+lint.select = ["I001"]
 
 [tool.isort]
 profile = "black"
