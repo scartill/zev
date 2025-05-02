@@ -1,10 +1,11 @@
-import dotenv
+import sys
 from pathlib import Path
+
+import dotenv
 import pyperclip
 import questionary
 from rich import print as rprint
 from rich.console import Console
-import sys
 
 from zev.config.setup import run_setup
 from zev.constants import CONFIG_FILE_NAME
@@ -68,8 +69,8 @@ def show_options(words: str):
 
 
 def run_no_prompt():
-    input = get_input_string("input", "Describe what you want to do", "", False)
-    show_options(input)
+    user_input = get_input_string("input", "Describe what you want to do", "", False)
+    show_options(user_input)
 
 
 def app():
