@@ -1,13 +1,12 @@
 import sys
 from pathlib import Path
+from subprocess import run as run_command
 
 import dotenv
 import pyperclip
 import questionary
 from rich import print as rprint
 from rich.console import Console
-import sys
-from subprocess import run as run_command
 
 from zev.config.setup import run_setup
 from zev.constants import CONFIG_FILE_NAME
@@ -64,11 +63,12 @@ def show_options(words: str):
             rprint("[green]✓[/green] Copied to clipboard")
         except pyperclip.PyperclipException as e:
             rprint(
-                f"[red]Could not copy to clipboard (see https://github.com/dtnewman/zev?tab=readme-ov-file#-dependencies)[/red]\n"
+                "[red]Could not copy to clipboard (see https://github.com/dtnewman/zev?tab=readme-ov-file#-dependencies)[/red]\n"
             )
-            rprint(f"[cyan]Here is your command:[/cyan]")
+            rprint("[cyan]Here is your command:[/cyan]")
             print(selected.command)
-            if questionary.confirm("Do you like to run it?").ask():
+            if questionary.confirm("Would you like to run it?").ask():
+                print("Running command:", selected.command)
                 run_command(selected.command, shell=True)
 
 
@@ -93,7 +93,7 @@ def app():
         print("Setup complete...\n")
         return
     elif len(args) == 1 and args[0] == "--version":
-        print("zev version: 0.7.0")
+        print("zev version: 0.7.1")
         return
 
     # important: make sure this is loaded before actually running the app (in regular or interactive mode)
