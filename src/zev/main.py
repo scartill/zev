@@ -11,8 +11,9 @@ from rich.console import Console
 from zev.config import config
 from zev.config.setup import run_setup
 from zev.constants import CONFIG_FILE_NAME
+from zev.history import history
 from zev.llms.llm import get_inference_provider
-from zev.utils import get_env_context, get_input_string
+from zev.utils import get_env_context, get_input_string, show_help
 
 
 def setup():
@@ -26,6 +27,7 @@ def show_options(words: str):
     with console.status(f"[bold blue]Thinking... [grey39](running query using {config.llm_provider} backend)", spinner="dots"):
         inference_provider = get_inference_provider()
         response = inference_provider.get_options(prompt=words, context=context)
+        history.save_options(words, response)
     if response is None:
         return
 
@@ -75,8 +77,41 @@ def show_options(words: str):
 
 
 def run_no_prompt():
-    user_input = get_input_string("input", "Describe what you want to do", "", False)
-    show_options(user_input)
+    input = get_input_string("input", "Describe what you want to do:", required=False, help_text="(-h for help)")
+    if handle_special_case(input):
+        return
+    show_options(input)
+
+
+def handle_special_case(args):
+    if not args:
+        return False
+
+    if isinstance(args, str):
+        args = args.split()
+
+    if len(args) > 1:
+        return False
+
+    command = args[0].lower()
+
+    if command == "--setup":
+        setup()
+        return True
+
+    if command == "--version":
+        print("zev version: 0.6.2")
+        return True
+
+    if command == "--past" or command == "-p":
+        history.show_history()
+        return True
+
+    if command == "--help" or command == "-h":
+        show_help()
+        return True
+
+    return False
 
 
 def app():
@@ -89,16 +124,10 @@ def app():
         print("Setup complete...\n")
         if len(args) == 1 and args[0] == "--setup":
             return
-    elif len(args) == 1 and args[0] == "--setup":
-        dotenv.load_dotenv(config_path, override=True)
-        run_setup()
-        print("Setup complete...\n")
-        return
-    elif len(args) == 1 and args[0] == "--version":
-        print("zev version: 0.7.1")
+
+    if handle_special_case(args):
         return
 
-    # important: make sure this is loaded before actually running the app (in regular or interactive mode)
     dotenv.load_dotenv(config_path, override=True)
 
     if not args:
