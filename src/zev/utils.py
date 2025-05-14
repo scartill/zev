@@ -1,35 +1,46 @@
 import os
 import platform
 
+import questionary
+
+
+CLI_STYLE = questionary.Style([
+    ("qmark", "#98c379"),
+    ("question", "#98c379"),
+    ("instruction", "italic #646464"),
+])
 
 def get_input_string(
     field_name: str,
-    prompt: str,
+    prompt_text: str,
     default: str = "",
     required: bool = False,
     help_text: str = "",
 ) -> str:
-    if default:
-        prompt = f"{prompt} (default: {default})"
-    else:
-        prompt = f"{prompt}"
+    """Ask for a single line of input in the terminal, with colour + hint."""
+    base = f"{prompt_text} (default: {default})" if default else prompt_text
 
-    # ANSI escape code for green color (#98c379)
-    green_color = "\033[38;2;152;195;121m"
-    gray_color = "\033[38;2;100;100;100m"
-    reset_color = "\033[0m"
+    while True:
+        value = (
+            questionary.text(
+                message=base,
+                default=default,
+                instruction=help_text or None,
+                style=CLI_STYLE,
+                validate=lambda t: bool(t) if required else True,
+            ).ask()
+        )
 
-    if help_text:
-        formatted_prompt = f"{green_color}{prompt} {gray_color}{help_text}{reset_color}"
-    else:
-        formatted_prompt = f"{green_color}{prompt}{reset_color}"
+        if value is None:            # user pressed Ctrl-C / Ctrl-D
+            raise KeyboardInterrupt
+        if value == "" and default:  # user just hit ↵
+            return default
+        if value or not required:
+            return value
 
-    value = input(f"{formatted_prompt} ") or default
-    if required and not value:
-        print(f"{field_name} is required, please try again")
-        return get_input_string(field_name, prompt, default, required, help_text)
+        # Required but empty ─ repeat
+        print(f"{field_name} is required, please try again.")
 
-    return value or default
 
 
 def get_env_context() -> str:
@@ -43,9 +54,9 @@ def show_help():
 Zev is a simple CLI tool to help you remember terminal commands.
 
 Usage:
-zev [query]               Describe what you want to do
+zev "<query>"               Describe what you want to do
 zev --help, -h            Show this help message
-zev --past, -p            Show command history
-zev --setup               Run setup again
-zev --version             Show version information
+zev --recent, -r          Show recently run commands and results
+zev --setup, -s           Run setup again
+zev --version, -v         Show version information
 """)
