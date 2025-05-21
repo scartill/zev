@@ -3,7 +3,6 @@ import platform
 
 import questionary
 
-
 CLI_STYLE = questionary.Style(
     [
         ("qmark", "#98c379"),

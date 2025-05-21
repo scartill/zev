@@ -4,9 +4,9 @@ from typing import Optional
 import questionary
 from pydantic import BaseModel
 
+from zev.command_selector import show_options
 from zev.constants import HISTORY_FILE_NAME
 from zev.llms.types import OptionsResponse
-from zev.command_selector import show_options
 
 
 class CommandHistoryEntry(BaseModel):

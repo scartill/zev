@@ -5,11 +5,11 @@ import dotenv
 from rich import print as rprint
 from rich.console import Console
 
+from zev.command_history import CommandHistory
 from zev.command_selector import show_options
 from zev.config import config
 from zev.config.setup import run_setup
 from zev.constants import CONFIG_FILE_NAME
-from zev.command_history import CommandHistory
 from zev.llms.llm import get_inference_provider
 from zev.utils import get_env_context, get_input_string, show_help
 
@@ -69,7 +69,7 @@ def handle_special_case(args):
         return True
 
     if command == "--version" or command == "-v":
-        print("zev version: 0.8.0")
+        print("zev version: 0.8.1")
         return True
 
     if command == "--recent" or command == "-r":
