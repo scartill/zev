@@ -11,6 +11,7 @@ from zev.config.types import (
     SetupQuestionText,
 )
 from zev.constants import LLMProviders
+from zev.llms.anthropic.setup import questions as anthropic_questions
 from zev.llms.azure_openai.setup import questions as azure_questions
 from zev.llms.gemini.setup import questions as gemini_questions
 from zev.llms.ollama.setup import questions as ollama_questions
@@ -40,6 +41,11 @@ setup_questions = [
                 value=LLMProviders.AZURE_OPENAI,
                 label="Azure OpenAI",
                 follow_up_questions=azure_questions,
+            ),
+            SetupQuestionSelectOption(
+                value=LLMProviders.ANTHROPIC,
+                label="Anthropic Claude",
+                follow_up_questions=anthropic_questions,
             ),
         ],
     )
